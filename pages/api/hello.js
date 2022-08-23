@@ -10,11 +10,19 @@ export default async function handler(req, res) {
       source: doc,
       output: 'json',
       engine: 'htmlcs',
-      level: 'WCAG2AAA',
+      level: 'WCAG2A',
     });
-    const result = data?.split('Object]\n')[1];
-    res.status(200).json({ result: JSON.parse(result) });
+    const result = data.includes('Object]\n') ? data?.split('Object]\n')[1] : data;
+    res
+      .status(200)
+      .json({ status: true, data: JSON.parse(result), message: '' });
   } catch (error) {
-    res.status(500).json({ result: typeof error === 'string' ? error : JSON.stringify(error) });
+    res
+      .status(500)
+      .json({
+        status: false,
+        data: [],
+        message: typeof error === 'string' ? error : JSON.stringify(error),
+      });
   }
 }
