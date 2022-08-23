@@ -12,17 +12,14 @@ export default async function handler(req, res) {
       engine: 'htmlcs',
       level: 'WCAG2A',
     });
-    const result = data.includes('Object]\n') ? data?.split('Object]\n')[1] : data;
-    res
-      .status(200)
-      .json({ status: true, data: JSON.parse(result), message: '' });
+    const result = data.includes('Object]\n')
+      ? data?.split('Object]\n')[1]
+      : data;
+    res.status(200).json({ status: true, data: JSON.parse(result) });
   } catch (error) {
-    res
-      .status(500)
-      .json({
-        status: false,
-        data: [],
-        message: typeof error === 'string' ? error : JSON.stringify(error),
-      });
+    res.status(500).json({
+      status: false,
+      message: typeof error === 'string' ? error : JSON.stringify(error),
+    });
   }
 }
