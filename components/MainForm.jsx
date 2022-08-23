@@ -66,14 +66,14 @@ export default function MainForm() {
         <h1 className='text-3xl font-medium'>Accessibility Checker</h1>
         <form onSubmit={onSubmit} onReset={onReset}>
           <div className='mt-8'>
-            <label htmlFor='url'>Enter the URL:</label>
+            <label htmlFor='url'>Enter the URL</label>
           </div>
           <div className='mt-2'>
             <input
               type='url'
               name='url'
               id='url'
-              className='outline-none border-2 rounded-md px-2 py-1 ml-2'
+              className='outline-none border-2 rounded-sm px-2 py-1 ml-2'
               required
               value={url}
               onChange={(event) => setUrl(event.target.value)}
@@ -82,13 +82,13 @@ export default function MainForm() {
           <div className='mt-8'>
             <button
               type='submit'
-              className='bg-green-500 text-white rounded-sm px-4 py-1 mx-3'
+              className='bg-green-600 text-white rounded-sm px-4 py-1 mx-3'
             >
               Submit
             </button>
             <button
               type='reset'
-              className='bg-red-500 text-white rounded-sm px-4 py-1 mx-3'
+              className='bg-red-600 text-white rounded-sm px-4 py-1 mx-3'
             >
               Clear
             </button>
