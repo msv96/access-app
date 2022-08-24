@@ -1,103 +1,57 @@
-import React, { useState } from 'react';
+import { useRouter } from 'next/router';
+import React, { useEffect, useState } from 'react';
 import { FcHighPriority, FcInfo, FcMediumPriority } from 'react-icons/fc';
-import Spinner from './Spinner';
+import Spinner from '../components/Spinner';
 
-export default function MainForm() {
-  const [url, setUrl] = useState('');
+export default function Report() {
+  const router = useRouter();
+  const { url } = router.query;
   const [loading, setLoading] = useState(false);
-  const [errors, setErrors] = useState('');
   const [report, setReport] = useState({});
 
-  function refine(data) {
-    const count = {
-      error: 0,
-      notice: 0,
-      warning: 0,
-    };
-    const finalData = data
-      .map((item) => {
-        const type = item.type;
-        if (type) {
-          count[type] += 1;
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        setLoading(true);
+        const { origin } = window.location;
+        const link = origin.includes('localhost')
+          ? origin.replace('3000', '3004')
+          : origin.replace('vercel.app', 'herokuapp.com');
+        const html = await fetch(`${link}/api/v1/report?url=${url}`);
+        const { status, data } = await html.json();
+        if (status) {
+          const count = {
+            error: 0,
+            notice: 0,
+            warning: 0,
+          };
+          const finalData = data
+            .map((item) => {
+              const type = item.type;
+              if (type) {
+                count[type] += 1;
+              }
+              return item;
+            })
+            .filter((item) => item.type);
+          const final = {
+            data: finalData,
+            count,
+            date: new Date().toLocaleString(),
+          };
+          setReport(final);
         }
-        return item;
-      })
-      .filter((item) => item.type);
-    return { data: finalData, count, date: new Date().toLocaleString() };
-  }
-
-  async function onSubmit(event) {
-    event.preventDefault();
-    try {
-      setLoading(true);
-      const { origin } = window.location;
-      const link = origin.includes('localhost')
-        ? origin.replace('3000', '3004')
-        : origin.replace('vercel.app', 'herokuapp.com');
-      const result = await fetch(`${link}/api/v1/report?url=${url}`);
-      const { status, data, message } = await result.json();
-      if (status) {
-        setReport(refine(data));
-      } else {
-        setErrors(message);
-      }
-      setLoading(false);
-    } catch (error) {
-      setLoading(false);
-      if (typeof error === 'object') {
-        setErrors(JSON.stringify(error));
-      } else {
-        setErrors(error);
+        setLoading(false);
+      } catch (error) {
+        setLoading(false);
+        console.log(error);
       }
     }
-  }
-
-  function onReset(event) {
-    event.preventDefault();
-    setUrl('');
-    setReport({});
-  }
+    fetchData();
+  }, [url]);
 
   if (loading) {
     return <Spinner />;
-  }
-
-  if (!loading && Object.keys(report).length < 1) {
-    return (
-      <div className='w-5/6 my-20 mx-auto text-center'>
-        <h1 className='text-3xl font-medium'>Accessibility Checker</h1>
-        <form onSubmit={onSubmit} onReset={onReset}>
-          <div className='mt-8'>
-            <label htmlFor='url'>Enter the URL</label>
-          </div>
-          <div className='mt-2'>
-            <input
-              type='url'
-              name='url'
-              id='url'
-              className='outline-none border-2 rounded-sm px-2 py-1 ml-2'
-              required
-              value={url}
-              onChange={(event) => setUrl(event.target.value)}
-            />
-          </div>
-          <div className='mt-8'>
-            <button
-              type='submit'
-              className='bg-green-600 text-white rounded-sm px-4 py-1 mx-3'
-            >
-              Submit
-            </button>
-            <button
-              type='reset'
-              className='bg-red-600 text-white rounded-sm px-4 py-1 mx-3'
-            >
-              Clear
-            </button>
-          </div>
-        </form>
-      </div>
-    );
   }
 
   if (!loading && Object.keys(report).length > 0) {
@@ -121,7 +75,7 @@ export default function MainForm() {
                 <button
                   type='button'
                   className='bg-indigo-600 text-white rounded-sm px-4 py-1'
-                  onClick={onReset}
+                  onClick={() => router.push('/')}
                 >
                   Back
                 </button>
@@ -162,7 +116,7 @@ export default function MainForm() {
               <div className='w-1/5 px-3 py-1'>Issues</div>
               <div className='w-4/5 px-3 py-1'>Requirements</div>
             </div>
-            {report.data.map((item, index) => {
+            {report?.data?.map((item, index) => {
               return (
                 <div key={index + item.code} className='flex border-b-2'>
                   <div className='w-1/5 px-3 py-1 capitalize'>{item.type}</div>
@@ -176,5 +130,5 @@ export default function MainForm() {
     );
   }
 
-  return <div className='text-red-500 mt-6'>{errors}</div>;
+  return <div className='text-red-500'>Something really bad happened.</div>;
 }
