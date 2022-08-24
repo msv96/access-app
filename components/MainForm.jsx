@@ -33,7 +33,7 @@ export default function MainForm() {
       const { origin } = window.location;
       const link = origin.includes('localhost')
         ? origin.replace('3000', '3004')
-        : origin.replace('vercel', 'herokuapp');
+        : origin.replace('vercel.app', 'herokuapp.com');
       const result = await fetch(`${link}/api/v1/report?url=${url}`);
       const { status, data, message } = await result.json();
       if (status) {
