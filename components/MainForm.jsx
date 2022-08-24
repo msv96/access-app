@@ -30,9 +30,11 @@ export default function MainForm() {
     event.preventDefault();
     try {
       setLoading(true);
-      const result = await fetch(
-        `${window.location.origin}/api/hello?url=${url}`
-      );
+      const { origin } = window.location;
+      const link = origin.includes('localhost')
+        ? origin.replace('3000', '3004')
+        : origin.replace('vercel', 'netlify');
+      const result = await fetch(`${link}/api/v1/report?url=${url}`);
       const { status, data, message } = await result.json();
       if (status) {
         setReport(refine(data));
@@ -102,9 +104,7 @@ export default function MainForm() {
     return (
       <div className='w-11/12 md:w-5/6 my-20 mx-auto'>
         <div>
-          <h1 className='text-3xl font-normal'>
-            Accessibility Checker Report
-          </h1>
+          <h1 className='text-3xl font-normal'>Accessibility Checker Report</h1>
           <div className='grid grid-cols-1 sm:grid-cols-2 gap-4 xl:grid-cols-4 my-10'>
             <div className='flex flex-col justify-between p-1'>
               <div>
