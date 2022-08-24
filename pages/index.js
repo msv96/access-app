@@ -25,6 +25,7 @@ export default function Home() {
           name='description'
           content='checks for a website whether it is accessible for all users or not'
         />
+        <link rel='icon' href='/favicon.ico' />
       </Head>
       <div className='w-5/6 my-20 mx-auto text-center'>
         <h1 className='text-3xl font-medium'>Accessibility Checker</h1>
