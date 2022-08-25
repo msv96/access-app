@@ -9,8 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "aatt": "^1.0.2",
     "next": "12.2.5",
+    "pa11y": "^6.2.3",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-icons": "^4.4.0"

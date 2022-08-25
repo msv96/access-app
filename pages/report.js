@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { FcHighPriority, FcInfo, FcMediumPriority } from 'react-icons/fc';
-import Spinner from '../components/Spinner';
+import Spinner from '../src/components/Spinner';
 
 export default function Report() {
   const router = useRouter();
@@ -12,36 +12,38 @@ export default function Report() {
   useEffect(() => {
     async function fetchData() {
       try {
-        setLoading(true);
-        const { origin } = window.location;
-        const link = origin.includes('localhost')
-          ? origin.replace('3000', '3004')
-          : origin.replace('vercel.app', 'herokuapp.com');
-        const html = await fetch(`${link}/api/v1/report?url=${url}`);
-        const { status, data } = await html.json();
-        if (status) {
-          const count = {
-            error: 0,
-            notice: 0,
-            warning: 0,
-          };
-          const finalData = data
-            .map((item) => {
-              const type = item.type;
-              if (type) {
-                count[type] += 1;
-              }
-              return item;
-            })
-            .filter((item) => item.type);
-          const final = {
-            data: finalData,
-            count,
-            date: new Date().toLocaleString(),
-          };
-          setReport(final);
+        if (url) {
+          setLoading(true);
+          const { origin } = window.location;
+          const link = origin.includes('localhost')
+            ? origin.replace('3000', '3004')
+            : origin.replace('vercel.app', 'herokuapp.com');
+          const html = await fetch(`${link}/api/v1/report?url=${url}`);
+          const { status, data } = await html.json();
+          if (status) {
+            const count = {
+              error: 0,
+              notice: 0,
+              warning: 0,
+            };
+            const finalData = data
+              .map((item) => {
+                const type = item.type;
+                if (type) {
+                  count[type] += 1;
+                }
+                return item;
+              })
+              .filter((item) => item.type);
+            const final = {
+              data: finalData,
+              count,
+              date: new Date().toLocaleString(),
+            };
+            setReport(final);
+          }
+          setLoading(false);
         }
-        setLoading(false);
       } catch (error) {
         setLoading(false);
         console.log(error);
