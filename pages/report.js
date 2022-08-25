@@ -19,7 +19,7 @@ export default function Report() {
             ? origin.replace('3000', '3004')
             : origin.replace('vercel.app', 'herokuapp.com');
           const html = await fetch(`${link}/api/v1/report?url=${url}`);
-          const { status, data } = await html.json();
+          const { status, data, date } = await html.json();
           if (status) {
             const count = {
               error: 0,
@@ -35,12 +35,11 @@ export default function Report() {
                 return item;
               })
               .filter((item) => item.type);
-            const final = {
+            setReport({
               data: finalData,
               count,
-              date: new Date().toLocaleString(),
-            };
-            setReport(final);
+              date,
+            });
           }
           setLoading(false);
         }
