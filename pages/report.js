@@ -6,14 +6,13 @@ import Spinner from '../src/components/Spinner';
 export default function Report() {
   const router = useRouter();
   const { url } = router.query;
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [report, setReport] = useState({});
 
   useEffect(() => {
     async function fetchData() {
       try {
         if (url) {
-          setLoading(true);
           const { origin } = window.location;
           const link = origin.includes('localhost')
             ? origin.replace('3000', '3004')
