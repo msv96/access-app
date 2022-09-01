@@ -16,7 +16,7 @@ export default function Report() {
           const { origin } = window.location;
           const link = origin.includes('localhost')
             ? origin.replace('3000', '3004')
-            : origin.replace('vercel.app', 'herokuapp.com');
+            : origin.replace('vercel', 'up.railway');
           const html = await fetch(`${link}/api/v1/report?url=${url}`);
           const { status, data, date } = await html.json();
           if (status) {
