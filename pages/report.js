@@ -63,10 +63,6 @@ export default function Report() {
             <div className='flex flex-col justify-between p-1'>
               <div>
                 <div>
-                  <strong>Date: </strong>
-                  {report?.date}
-                </div>
-                <div>
                   <strong>Scanned Page: </strong>
                   {url}
                 </div>
@@ -130,5 +126,9 @@ export default function Report() {
     );
   }
 
-  return <div className='text-red-500'>Something really bad happened.</div>;
+  return (
+    <div className='text-red-500 text-center m-10'>
+      Something really bad happened.
+    </div>
+  );
 }
