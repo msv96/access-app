@@ -23,21 +23,24 @@ export default function Report() {
             const count = {
               error: 0,
               notice: 0,
-              warning: 0,
+              warning: 0
             };
-            const finalData = data
-              .map((item) => {
-                const type = item.type;
-                if (type) {
-                  count[type] += 1;
-                }
-                return item;
-              })
-              .filter((item) => item.type);
+            const datas = data?.map((item) => {
+              const type = item.type;
+              if (type) {
+                count[type] += 1;
+              }
+              return item;
+            });
+            const finalData = [
+              ...datas?.filter((item) => item.type === 'error'),
+              ...datas?.filter((item) => item.type === 'warning'),
+              ...datas?.filter((item) => item.type === 'notice')
+            ];
             setReport({
               data: finalData,
               count,
-              date,
+              date
             });
           }
           setLoading(false);
@@ -109,14 +112,16 @@ export default function Report() {
           </div>
           <div className='bg-white'>
             <div className='flex bg-gray-200'>
-              <div className='w-1/5 px-3 py-1'>Issues</div>
-              <div className='w-4/5 px-3 py-1'>Requirements</div>
+              <div className='w-1/12 px-3 py-1 font-bold'>#</div>
+              <div className='w-2/12 px-3 py-1 font-bold'>Issues</div>
+              <div className='w-9/12 px-3 py-1 font-bold'>Requirements</div>
             </div>
             {report?.data?.map((item, index) => {
               return (
                 <div key={index + item.code} className='flex border-b-2'>
-                  <div className='w-1/5 px-3 py-1 capitalize'>{item.type}</div>
-                  <div className='w-4/5 px-3 py-1'>{item.msg}</div>
+                  <div className='w-1/12 px-3 py-1'>{index + 1}</div>
+                  <div className='w-2/12 px-3 py-1 capitalize'>{item.type}</div>
+                  <div className='w-9/12 px-3 py-1'>{item.msg}</div>
                 </div>
               );
             })}
