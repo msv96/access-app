@@ -25,18 +25,24 @@ export default function Report() {
               notice: 0,
               warning: 0
             };
-            const datas = data?.map((item) => {
-              const type = item.type;
-              if (type) {
-                count[type] += 1;
-              }
-              return item;
-            });
-            const finalData = [
-              ...datas?.filter((item) => item.type === 'error'),
-              ...datas?.filter((item) => item.type === 'warning'),
-              ...datas?.filter((item) => item.type === 'notice')
-            ];
+            const finalData = data
+              ?.map((item) => {
+                const type = item.type;
+                if (type) {
+                  count[type] += 1;
+                }
+                return item;
+              })
+              ?.filter((item) => item.type)
+              ?.sort((a, b) => {
+                if (a.type === 'error') {
+                  return -1;
+                }
+                if (b.type === 'error') {
+                  return 1;
+                }
+                return a.type < b.type ? 1 : -1;
+              });
             setReport({
               data: finalData,
               count,
